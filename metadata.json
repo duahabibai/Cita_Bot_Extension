@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Remix: Remix: Auto-Cita Extension",
+  "description": "Chrome extension for automating ICP appointments",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

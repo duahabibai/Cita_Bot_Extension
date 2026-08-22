@@ -1,0 +1,262 @@
+{
+  "cookies": [
+    {
+      "name": "f5_cspm",
+      "value": "1234",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/icpplus",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "46B76A57E9BB509E84A7F3051B676CDE.appdmzgal3_19023_icpplus",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/icpplus",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "TS01df4168",
+      "value": "01a3cd4c043673b91dbff652bb9b0fc9a8d83afbb84fbea21be64d8d72bd2cc3a656baa36ba138c8fc02a873e3e85106c06f8524658df250e4138a6f2a44dc5b16236645163130df9c3974ead2983b4c699a7720a6",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/icpplus",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "f5_cspm",
+      "value": "1234",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/icpco",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "628141619AD99DFF2F58354FAA2CB165.appdmzmol1_19304_icpco",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/icpco",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "TS0153c1d8",
+      "value": "01a3cd4c049865526b0cbf9919dbb0c7ab5454729a23c156c663e7eef58eeffe61151ce3bcec7474f799812f2f01ddc733af2b3ca99eea60388c905bfb22b65959713ba437",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/icpco",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "dtCookie",
+      "value": "v_4_srv_6_sn_E52150A7A6B1F3DDDDCC85CC02897936_perc_100000_ol_0_mul_1_app-3Afc0be45c7c7075ff_0_rcs-3Acss_0",
+      "domain": ".administracionelectronica.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__utmc",
+      "value": "129963284",
+      "domain": ".icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "BALANCEID",
+      "value": "balancer.apphpgal01",
+      "domain": ".sede.administracionespublicas.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "acceda_default",
+      "value": "3gu1n594lvpb3ro9bgps3e0j55",
+      "domain": "sede.administracionespublicas.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "dtCookie",
+      "value": "v_4_srv_19_sn_787030D83EC1CBF82888D5918EED0D59_perc_100000_ol_0_mul_1_app-3Afeea6ce75718e883_0_rcs-3Acss_0",
+      "domain": ".administracionespublicas.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__utma",
+      "value": "129963284.150981623.1787391588.1787393603.1787409555.3",
+      "domain": ".icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": 1821970554.286162,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__utmz",
+      "value": "129963284.1787409555.3.3.utmcsr=sede.administracionespublicas.gob.es|utmccn=(referral)|utmcmd=referral|utmcct=/",
+      "domain": ".icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": 1803178554,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TS0176f6a6",
+      "value": "01a3cd4c04f11a09dc8cd0d6abecf48821d9f287ddf5721e4ac78c273eec7019c85008192bbdc5a4916bc5f8d0bc84d33c8979de57fcce04b7ddf0fa1116e8e2feabee779c80747ad5f4f23c51c9f58ca30161b24ef78c164416e31ff57a9c1c2771319ecd",
+      "domain": ".sede.administracionespublicas.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__utmt",
+      "value": "1",
+      "domain": ".icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": 1787410766,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TS01629f81",
+      "value": "01a3cd4c0494a82c9f9aff69996bb5a5c4771b2d7b76d1f4b002349f5cec432b7055b686dff6f84e8373a6ad00b536323fcda6671b3b6224117f90405c93d9b066317713fb9b175aed00d66bc8084cc7d7a0548d9fef9b3ca5dcf8e246223b861829179c6c",
+      "domain": ".icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TSPD_101",
+      "value": "083a28b6b8ab280030c23d4df8249385f44caa73790659770d3250be1a634798bdd69015c06f6ad748ee34dd65c834ab08a223f9e2051800687ffa88b4fed63b72b2ab1b0f4bdd010515e0fcfe991b12",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TS00000000076",
+      "value": "083a28b6b8ab2800c60f792ffcbfbf3a884bbb8ca361423fa9b0008723446ef5628d8bb505e727dc5847e0ce3b420f9e086bf8ff6e09d00019f886bb7ce199a43ba1b5a9d2b31c3c7716dbf182b771d4b670b9d35a9b3e579b8cf914aca6c282ac3d2687d41277e1a82630739c4b5e2eaf231c0c5f52c3dec25a88f2293aeffb0ff2451d88ba94dd512ea49778c4d1821b58a1bb5d7f393942cf1af830990eb49e49c0a8fd1eae4936877c58d8cfe3e6e277466d083fd06c365b042ef01fda00a0924ef53f16d5f9ea787e9cde50e03acf78f4097a000b33352269020db1677271bb6d6847518d381adb97a172797b0db3778928e3d141518a3d48aefccaba22415aea9d75468ba6",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TSPD_101_DID",
+      "value": "083a28b6b8ab2800c60f792ffcbfbf3a884bbb8ca361423fa9b0008723446ef5628d8bb505e727dc5847e0ce3b420f9e086bf8ff6e06380051c5c8ce9d286fb9f3dbff66b0dd21c9a188da8bb4353a985fad4b64fb1fa4e81e50b9ab0c1b6d2a534415d99ba0dd9c4eeaec4068f66bcc",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TSf1e2d148029",
+      "value": "083a28b6b8ab28000574c44939703430dc1b62273c34406d60b31604fc48af5ad76b2372ae3ac06f6c723cd790df6e0b",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": 1787410583.882027,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__utmb",
+      "value": "129963284.16.10.1787409555",
+      "domain": ".icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": 1787412354,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TSb5dce861027",
+      "value": "083a28b6b8ab20009f41115a48050f377a14c8e0b67eb5b1a1751d615386325b49a829ad476690b208daf88ffe113000ea3a7a72fb7ee9bc3e1a004d2b79735e825868c1bf317359090b5688eec9cb458cc5172062d2b0ca6f0a4c4b273169b5",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TSf1e2d148077",
+      "value": "083a28b6b8ab2800b3719712c43eaad4c74179a850ca4bc5d6812d6b021cfebdd8f9d4133cf3f21aa8f867a6de2bde0a089f732b69172000fbc41f926595397458c1d8df67331f9fdae549dda84fff7ce37e470b9f9717d3",
+      "domain": "icp.administracionelectronica.gob.es",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://icp.administracionelectronica.gob.es",
+      "localStorage": [
+        {
+          "name": "TSPD_74",
+          "value": "083a28b6b8ab20002bd6da636b61a008af27da218f91ff5fd89d9b8fd20ce9baf23c18eba20c9d7908bc6cdf4108c8000005f3c422179f2c91f340490f1441ca5ef3bc679753009693485ba4d10b8d2b4ee807adffef19dadff8f4de78dc951ae924e354fb76936a9b66ee42573e2b0f42ca4ee3618c3c0b714bb181334f72b59801d6af92886a883dc78f4a781241664c2df7e89e88730f9228a340edfc3f19dfcaae73d72aa758b037df4730b0515d6903cdf9578ccb6d436bec75e4b97b9c19909a8dd124fbfc26a1468bcdff4569d7be7ea71be346fc80928ea522ea813884824cd9f81edcc53f9fe04433285f4717b4ddcb72120a72"
+        },
+        {
+          "name": "TS00000000076",
+          "value": "a77b0381f2f95bf5016a89b4920e4011796e083dd7857f8c00b6f3b88159ddeac9"
+        },
+        {
+          "name": "undefined",
+          "value": "692.047"
+        }
+      ]
+    },
+    {
+      "origin": "https://sede.administracionespublicas.gob.es",
+      "localStorage": [
+        {
+          "name": "undefined",
+          "value": "1022"
+        }
+      ]
+    }
+  ]
+}

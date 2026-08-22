@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: auto-cita-bot
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PLAYWRIGHT_BROWSERS_PATH
+        value: "0"
+    plan: free
+    healthCheckPath: /api/health

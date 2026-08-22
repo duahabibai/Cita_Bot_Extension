@@ -1,0 +1,33 @@
+{
+  "name": "auto-cita-bot",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "postinstall": "cross-env PLAYWRIGHT_BROWSERS_PATH=0 npx playwright install chromium",
+    "dev": "cross-env PLAYWRIGHT_BROWSERS_PATH=0 NODE_OPTIONS=--use-system-ca tsx server.ts",
+    "build": "esbuild ./server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "start": "cross-env PLAYWRIGHT_BROWSERS_PATH=0 NODE_OPTIONS=--use-system-ca node dist/server.cjs",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "firebase": "^12.17.0",
+    "glob": "^13.0.6",
+    "https-proxy-agent": "^9.1.0",
+    "node-telegram-bot-api": "^1.2.0",
+    "playwright": "^1.62.1",
+    "playwright-extra": "^4.3.6",
+    "puppeteer": "23.11.1",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node-telegram-bot-api": "^0.64.15",
+    "cross-env": "^10.1.0",
+    "esbuild": "^0.28.1",
+    "tsx": "^4.23.1",
+    "typescript": "^5.2.2"
+  }
+}

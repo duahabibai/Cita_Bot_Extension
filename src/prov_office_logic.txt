@@ -1,0 +1,162 @@
+  const chatId = query.message?.chat.id;
+  if (!chatId || !adminChatIds.includes(chatId.toString())) return;
+  const data = query.data;
+
+  if (data && data.startsWith("prov_")) {
+    const index = parseInt(data.replace("prov_", ""));
+    const session = activeSessions.get(chatId);
+
+    if (!session) {
+      bot.sendMessage(chatId, "⚠️ Session expired. Please click 'Launch Cloud Browser' again.");
+      bot.answerCallbackQuery(query.id);
+      return;
+    }
+
+    const { page, provinces } = session;
+    const selectedProv = provinces?.[index];
+
+    if (!selectedProv) {
+       bot.sendMessage(chatId, "⚠️ Invalid province selection.");
+       bot.answerCallbackQuery(query.id);
+       return;
+    }
+
+    if (!userStates.has(chatId)) userStates.set(chatId, {});
+    userStates.get(chatId)!.province = selectedProv;
+
+    bot.sendMessage(chatId, `🔄 Selecting province: ${selectedProv.text}...`);
+    bot.answerCallbackQuery(query.id);
+
+    try {
+      // Select the province
+      try {
+          await page.selectOption('select#form', selectedProv.value);
+      } catch (e) {}
+      
+      // Ensure the site registers the selection via JS events
+      try {
+          await page.evaluate(() => {
+              const selectElement = document.querySelector('select#form');
+              if (selectElement) {
+                  selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+          });
+      } catch (e) {}
+      await page.waitForTimeout(2000); // Give JS time to process
+
+      bot.sendMessage(chatId, `✅ Province selected in dropdown. Clicking 'Aceptar'...`);
+
+      try {
+        const preUrl = page.url();
+        const btnSelector = '#btnAceptar, input[value="Aceptar"]';
+        
+        // Hide potential overlays before click
+        await page.evaluate(() => {
+            const overlays = document.querySelectorAll('[id*="cookie"], [class*="cookie"], [id*="aviso"], [class*="aviso"]');
+            overlays.forEach(o => { (o as HTMLElement).style.display = 'none'; });
+        }).catch(() => {});
+
+        await page.waitForTimeout(Math.floor(Math.random() * 2000) + 1500);
+        await page.hover(btnSelector).catch(() => {});
+        await page.waitForTimeout(Math.floor(Math.random() * 400) + 200);
+        
+        await Promise.all([
+          page.waitForNavigation({ waitUntil: 'load', timeout: 45000 }).catch(() => {}),
+          page.click(btnSelector, { delay: Math.floor(Math.random() * 150) + 50 }).catch(() => {})
+        ]);
+        
+        if (page.url() === preUrl) {
+           bot.sendMessage(chatId, "⚠️ URL didn't change native click. Retrying via trusted event...");
+           await Promise.all([
+             page.waitForNavigation({ waitUntil: 'load', timeout: 45000 }).catch(() => {}),
+             page.evaluate((sel: string) => {
+                 const el = document.querySelector(sel);
+                 if (el) {
+                     const evt = new MouseEvent('click', { view: window, bubbles: true, cancelable: true });
+                     el.dispatchEvent(evt);
+                 }
+             }, btnSelector).catch(() => {})
+           ]);
+        }
+      } catch (clickErr: any) {
+        bot.sendMessage(chatId, `⚠️ Navigation error: ${clickErr.message}`);
+      }
+
+      bot.sendMessage(chatId, "⏳ Waiting 10 seconds for the next page to fully render via proxy...");
+      await page.waitForTimeout(10000); // Hard wait to ensure the proxy has loaded the next page
+
+      bot.sendMessage(chatId, "📸 Next page loaded. Taking screenshot...");
+
+      // Force stop just in case
+      // Removed window.stop() to allow CSS to load
+
+      const screenshotBuffer = await page.screenshot({
+        timeout: 30000,
+        animations: 'disabled',
+        type: 'jpeg',
+        quality: 70
+      });
+
+      bot.sendPhoto(chatId, screenshotBuffer, { caption: `✅ Selected: ${selectedProv.text}\nExtracting available offices...` });
+      await persistSessionState(chatId);
+
+      try {
+        // Wait for any select element that is likely the office dropdown
+        await page.waitForFunction(() => {
+            const selects = Array.from(document.querySelectorAll('select'));
+            return selects.some(s => s.id.toLowerCase().includes('sede') || s.name.toLowerCase().includes('sede'));
+        }, { timeout: 15000 }).catch(() => {});
+        
+        const offices = await page.$$eval('select', (selects: HTMLSelectElement[]) => {
+          let targetSelect = selects.find(s => s.id.toLowerCase().includes('sede') || s.name.toLowerCase().includes('sede'));
+          if (!targetSelect) {
+              // Fallback: Find select containing 'oficina'
+              targetSelect = selects.find(s => {
+                 if (s.id.toLowerCase().includes('tramite') || s.name.toLowerCase().includes('tramite')) return false;
+                 return Array.from(s.options).some(o => o.text.toLowerCase().includes('oficina'));
+              });
+          }
+          if (targetSelect) {
+             return Array.from(targetSelect.options)
+               .map(o => ({ text: o.textContent?.trim() || '', value: o.value, selectId: targetSelect!.id, selectName: targetSelect!.name }))
+               .filter(o => o.value !== '' && o.value !== '-1' && !o.text.toLowerCase().includes('selecciona oficina'));
+          }
+          return [];
+        });
+
+        if (offices && offices.length > 0) {
+          session.offices = offices;
+          bot.sendMessage(chatId, `✅ Found ${offices.length} offices.`);
+          
+          const inlineKeyboard = [];
+          for (let i = 0; i < offices.length; i++) {
+            let buttonText = offices[i].text;
+            if (buttonText.length > 60) buttonText = buttonText.substring(0, 57) + "...";
+            inlineKeyboard.push([{ text: buttonText, callback_data: `office_${i}` }]);
+          }
+
+          bot.sendMessage(chatId, "🏢 Please select an office:", {
+            reply_markup: { inline_keyboard: inlineKeyboard }
+          });
+        } else {
+          bot.sendMessage(chatId, "⚠️ Could not find any offices in the dropdown.");
+        }
+      } catch (e: any) {
+        bot.sendMessage(chatId, `⚠️ Could not locate the offices dropdown ('select#sede'). The site might require a different step or there are no offices available.\nError: ${e.message}`);
+      }
+
+      // Reset timeout
+      clearTimeout(session.timeoutId);
+      session.timeoutId = setTimeout(() => {
+        bot.sendMessage(chatId, "⏳ Session expired due to 10 minutes of inactivity.");
+        cleanupSession(chatId);
+      }, 10 * 60 * 1000);
+
+    } catch (error: any) {
+       bot.sendMessage(chatId, `❌ Error moving to next step:\n${error.message}\n\n📸 Taking debug screenshot...`);
+       try {
+           const errImg = await page.screenshot({ timeout: 15000, type: 'jpeg', quality: 50 });
+           bot.sendPhoto(chatId, errImg, { caption: "Debug screenshot of the error state." });
+       } catch (e) {}
+       // We won't strictly kill the session here, so the user can see the error and we can still try to recover if needed.
+       // cleanupSession(chatId);

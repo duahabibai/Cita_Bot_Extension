@@ -1,0 +1,186 @@
+    return;
+  }
+
+  if (text === "Launch Cloud Browser") {
+    bot.sendMessage(chatId, "⏳ Launching Playwright browser in the cloud with Spanish Residential Proxy (IPRoyal Madrid)...");
+    
+    // Clean up any existing session for this user
+    cleanupSession(chatId);
+
+    let browser;
+    try {
+      const sessionStr = crypto.createHash('md5').update(chatId.toString()).digest('hex').substring(0, 8);
+      const randomPassword = `${PROXY_CONFIG.password}_session-${sessionStr}`;
+      
+      browser = await chromium.launch({
+        headless: true,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-web-security',
+          '--disable-features=IsolateOrigins,site-per-process',
+          '--disable-blink-features=AutomationControlled'
+        ],
+        proxy: {
+          server: PROXY_CONFIG.server,
+          username: PROXY_CONFIG.username,
+          password: randomPassword
+        }
+      });
+      
+      const userAgents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2.1 Safari/605.1.15'
+      ];
+      const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
+
+      const sessionFilePath = path.resolve(`./sessions/${chatId}.json`);
+      const contextOptions: any = {
+        locale: 'es-ES',
+        timezoneId: 'Europe/Madrid',
+        userAgent: randomUserAgent
+      };
+      if (fs.existsSync(sessionFilePath)) {
+        contextOptions.storageState = sessionFilePath;
+      }
+
+      const context = await browser.newContext(contextOptions);
+      const page = await context.newPage();
+      
+      // Save proxy bandwidth by blocking images, media, and fonts
+      await page.route('**/*', (route) => {
+        const resourceType = route.request().resourceType();
+        if (['image', 'media', 'font'].includes(resourceType)) {
+          route.abort();
+        } else {
+          route.continue();
+        }
+      });
+      
+      // Additional stealth measure just in case
+      await page.addInitScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
+        
+      bot.sendMessage(chatId, "🌐 Browser opened! Navigating to Extranjería (this might take a bit via Spanish Proxy)...");
+      
+      // Residential proxies are slow, so give it ample time
+      await page.goto('https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus', { waitUntil: 'load', timeout: 60000 });
+      
+      // Cookie/Overlay Dismissal Logic
+      try {
+          await page.evaluate(() => {
+              // 1. Try to click standard cookie acceptance buttons
+              const btns = Array.from(document.querySelectorAll('button, a, input'));
+              for (const btn of btns) {
+                  const txt = (btn.textContent || (btn as HTMLInputElement).value || '').toLowerCase();
+                  if (txt.includes('aceptar cookie') || txt.includes('accept cookies') || txt.includes('entendido') || txt.includes('de acuerdo')) {
+                      (btn as HTMLElement).click();
+                  }
+              }
+              // 2. Hide common cookie overlays physically to prevent click interception
+              const overlays = document.querySelectorAll('[id*="cookie"], [class*="cookie"], [id*="aviso"], [class*="aviso"]');
+              overlays.forEach(o => { (o as HTMLElement).style.display = 'none'; });
+          });
+          await page.waitForTimeout(1000);
+      } catch (e) {}
+
+      bot.sendMessage(chatId, "👉 Checking if '#submit' button exists...");
+      
+      try {
+        const buttonElement = await page.$('#submit');
+        if (buttonElement) {
+          bot.sendMessage(chatId, "👉 Button found! Clicking it and waiting for next page...");
+          await page.waitForTimeout(Math.floor(Math.random() * 1500) + 1000);
+          await page.hover('#submit').catch(() => {});
+          await page.waitForTimeout(Math.floor(Math.random() * 300) + 200);
+          await Promise.all([
+            page.waitForNavigation({ waitUntil: 'load', timeout: 45000 }).catch(() => {}),
+            page.click('#submit', { delay: Math.floor(Math.random() * 100) + 50, timeout: 5000 }).catch(() => {})
+          ]);
+          bot.sendMessage(chatId, "✅ Navigation completed.");
+        } else {
+          bot.sendMessage(chatId, "⚠️ Could not find the '#submit' button on this page.");
+        }
+      } catch (err: any) {
+        bot.sendMessage(chatId, `⚠️ Click/Nav error (ignoring): ${err.message}`);
+      }
+      
+      bot.sendMessage(chatId, "⏳ Waiting for the province page to fully load via proxy (timeout 30s)...");
+      try {
+         // Wait specifically for the dropdown to appear
+         await page.waitForSelector('select#form', { timeout: 30000 });
+      } catch (e) {
+         bot.sendMessage(chatId, "⚠️ Could not find province dropdown within 30 seconds. The site might be extremely slow or down.");
+      }
+      
+      bot.sendMessage(chatId, "🛑 Force-stopping any pending background resources to stabilize...");
+      try {
+        // Removed window.stop() to allow CSS to load
+      } catch (e) {}
+
+      bot.sendMessage(chatId, "🔍 Extracting page data...");
+      
+      try {
+        // Extract provinces
+        const provinces = await page.$$eval('select#form option', options => {
+          return options
+            .map(o => ({ text: o.textContent?.trim() || '', value: (o as HTMLOptionElement).value }))
+            .filter(o => o.value !== '' && !o.text.includes('Seleccione'));
+        });
+
+        if (provinces && provinces.length > 0) {
+           bot.sendMessage(chatId, `✅ Found ${provinces.length} provinces.`);
+           
+           // Take screenshot for context
+           const screenshotBuffer = await page.screenshot({ 
+             timeout: 60000, 
+             animations: 'disabled',
+             type: 'jpeg',
+             quality: 60
+           });
+           await bot.sendPhoto(chatId, screenshotBuffer, { caption: "Here is the current screen." });
+
+           // Build inline keyboard
+           const inlineKeyboard = [];
+           for (let i = 0; i < provinces.length; i += 4) {
+             const row = [];
+             for (let j = 0; j < 4; j++) {
+               if (provinces[i + j]) {
+                 row.push({ text: provinces[i + j].text, callback_data: `prov_${i + j}` });
+               }
+             }
+             inlineKeyboard.push(row);
+           }
+    
+           bot.sendMessage(chatId, "📍 Please select a province:", {
+             reply_markup: { inline_keyboard: inlineKeyboard }
+           });
+    
+           // Save session
+           const timeoutId = setTimeout(() => {
+              bot.sendMessage(chatId, "⏳ Session expired due to 10 minutes of inactivity. Please launch the browser again.");
+              cleanupSession(chatId);
+           }, 10 * 60 * 1000); // 10 minutes
+    
+           activeSessions.set(chatId, { browser, context, page, timeoutId, provinces });
+           await persistSessionState(chatId);
+
+        } else {
+           let pageText = "Unknown";
+           try {
+               pageText = await page.evaluate(() => document.body ? document.body.innerText.substring(0, 500) : "No body");
+           } catch(e) {}
+           
+           bot.sendMessage(chatId, `⚠️ Could not find the province dropdown.\n📝 Page text snippet:\n${pageText}\n\nTaking screenshot to see what went wrong...`);
+           try {
+             const screenshotBuffer = await page.screenshot({ timeout: 60000, type: 'jpeg', quality: 60 });
+             await bot.sendPhoto(chatId, screenshotBuffer);
+           } catch(e: any) {
+             bot.sendMessage(chatId, `❌ Failed to take screenshot: ${e.message}`);
+           }
+           await browser.close();
+        }
+
+      } catch (err: any) {
